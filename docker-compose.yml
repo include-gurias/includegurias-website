@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_USER: localdev # Altere para um nome de usuário que você queira
       POSTGRES_PASSWORD: localdev # Altere para uma senha segura
-      POSTGRES_DB: includeGuriasDB # Altere para o nome do banco de dados
+      POSTGRES_DB: includeGuriaDB # Altere para o nome do banco de dados
     ports:
       - "5432:5432" # Mapeia a porta do container para a sua máquina
     volumes:

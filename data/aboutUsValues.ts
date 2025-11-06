@@ -12,13 +12,13 @@ const aboutUsValues = [
     id: 2,
     icon: AboutUsIcon2,
     title: "Mestrados e Doutorados",
-    description: "@TODO - Ver o que colocar aqui",
+    description: "",
   },
   {
     id: 3,
     icon: AboutUsIcon3,
     title: "Graduação",
-    description: "@TODO - Ver o que colocar aqui",
+    description: "",
   },
 ];
 
