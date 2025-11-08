@@ -19,36 +19,11 @@ import { FaChevronDown, FaChevronRight } from "react-icons/fa";
 import { GoChevronDown } from "react-icons/go";
 import { IoClose } from "react-icons/io5";
 import { RxHamburgerMenu } from "react-icons/rx";
-import { useMaterialsStore } from "app/states";
-import Material from "types/data/material";
 import { HeaderMotion, LogoMotion } from "./HeaderMotion";
 
 export default function WithSubnavigation() {
   const { isOpen, onToggle } = useDisclosure();
-  const { getMaterials } = useMaterialsStore((state) => ({
-    getMaterials: state.getMaterials,
-  }));
-  const [IncludeMaterials] = useMaterialsStore((state) => [state.materials]);
-
-  useEffect(() => {
-    getMaterials();
-  }, [getMaterials]);
-
-  const materialsItem = NAV_ITEMS?.find(
-    (item) => item.label === "Nossos Materiais"
-  );
-
-  if (materialsItem) {
-    materialsItem.children = IncludeMaterials.map((material: Material) => ({
-      label: material.title,
-      href: `${material.href}`,
-    })).concat([
-      {
-        label: "Ver todos",
-        href: "/materials",
-      },
-    ]);
-  }
+ 
   return (
     <HeaderMotion>
       <>
@@ -210,7 +185,7 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
   const { isOpen, onToggle } = useDisclosure();
   return (
     <Stack spacing={4} onClick={children && onToggle}>
-      <Link href={href === "/materials" ? "#" : href} key={label}>
+      <Link href={href} key={label}>
         <Box
           py={2}
           display={"flex"}
@@ -282,7 +257,7 @@ const NAV_ITEMS: Array<NavItem> = [
         href: "/equipe",
       },
       {
-        label: "Linha do tempo",
+        label: "Nossa História",
         href: "/timeline",
       },
     ],

@@ -57,7 +57,7 @@ export default function OurMaterials() {
                 fontSize={{ base: "md", md: "lg", lg: "xl" }}
                 textAlign="center"
               >
-                Nos da include gurias acreditamos que a tecnologia é uma
+                Nós do Include Gurias acreditamos que a tecnologia é uma
                 ferramenta poderosa para transformar a vida das pessoas. Por
                 isso, desenvolvemos programas de formação e mentoria para
                 mulheres que desejam ingressar na área de tecnologia.

@@ -18,6 +18,7 @@ export { TeamCard } from "./Cards/TeamCards";
 export { default as FounderCard } from "./Cards/FounderCard";
 export { default as MaterialCard } from "./Cards/MaterialCard";
 export { default as WomanCard } from "./Cards/WomanCard";
+export { default as MissionValuesCard } from "./Cards/MissionValuesCard";
 
 // sections
 export { default as NewsSection } from "./News/NewsSection";
