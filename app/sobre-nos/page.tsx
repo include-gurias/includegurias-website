@@ -15,6 +15,8 @@ import {
   SubText,
   TeamForAboutUs,
   MissionValuesCard,
+  AboutUsValues,
+  TeamWithNoFounder,
 } from "components";
 import Material from "types/data/material";
 import getSocialmediaIcon from "utils/getSocialMediaIcon";
@@ -76,10 +78,10 @@ export default function AboutUs() {
             align={"center"}
             classNames={{ text: "mt-16" }}
           />
-          <TeamForAboutUs />
+          <TeamWithNoFounder />
 
           <SubHeadingText
-            text="Nossas Bolsistas"
+            text="Nossos Bolsistas e Voluntários 2026/2"
             align={"center"}
             classNames={{ text: "mt-16" }}
           />
