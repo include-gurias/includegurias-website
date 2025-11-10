@@ -16,12 +16,6 @@ const AboutUsValues = () => {
         <GridItem key={item.id} maxW="300px" h="fit-content" p={4} w="100%">
           <Reveal animationdirection="left" delay={0.3}>
             <Flex direction="column" h="full">
-              <Image
-                src={item.icon}
-                width={150}
-                height={150}
-                alt={item.title}
-              />
               <Text
                 fontSize="3xl"
                 fontWeight="bold"
