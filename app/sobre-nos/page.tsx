@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { TbBook } from "react-icons/tb";
 import { useMaterialsStore, useSocialMediaStore } from "app/states";
 import {
-  AboutUsValues,
   AllPartners,
   AllPeople,
   BolsistasSection,
@@ -15,6 +14,9 @@ import {
   SubHeadingText,
   SubText,
   TeamForAboutUs,
+  MissionValuesCard,
+  AboutUsValues,
+  TeamWithNoFounder,
 } from "components";
 import Material from "types/data/material";
 import getSocialmediaIcon from "utils/getSocialMediaIcon";
@@ -50,75 +52,8 @@ export default function AboutUs() {
             span: "mb-8",
           }}
         />
-        <AboutUsValues />
 
-        <SubHeadingText
-          text="Quer ficar por dentro de tudo? siga o include!"
-          align={"start"}
-          classNames={{ text: "mt-8" }}
-        />
-        <Stack
-          direction={"row"}
-          spacing={6}
-          justifyContent={{ base: "center", lg: "start" }}
-          mb={4}
-        >
-          {SocialMediaData.map((socialMedia, index) => (
-            <SocialButton
-              key={socialMedia.name + index}
-              size={45}
-              label={socialMedia.name}
-              href={socialMedia.href}
-              animation="rotateHover"
-              delay={index * 0.1}
-            >
-              {getSocialmediaIcon({
-                socialMedia: socialMedia.name,
-                props: { size: 25, color: "white" },
-              })}
-            </SocialButton>
-          ))}
-        </Stack>
-      </Box>
-
-      <Box p={4} className="section">
-        <HeadingText text="Nossos Materias" align={"start"} />
-        <SubText
-          text="Nossa missão é empoderar mulheres e meninas através da tecnologia, ciência e inovação."
-          align={"start"}
-        />
-        <Grid
-          gridTemplateColumns={{ base: "repeat(1, 1fr)", lg: "repeat(3, 1fr)" }}
-          gap={4}
-          className="mt-4"
-        >
-          {/* array de 3 items do materials */}
-          {loading ? (
-            <Spinner />
-          ) : (
-            materials
-              .slice(0, 3)
-              .map((material: Material) => (
-                <MaterialCard
-                  key={material.title}
-                  title={material.title}
-                  description={material.description}
-                  isNew={material.isNew}
-                  imageUrl={material.imageUrl}
-                  href={material.href}
-                />
-              ))
-          )}
-        </Grid>
-        <Flex justifyContent={"center"} mt={6}>
-          <PrimaryButton
-            recuo={-255}
-            classNames={{ divContainer: "w-[325px]" }}
-            icon={<TbBook size={25} />}
-          >
-            Ver todos os materiais
-          </PrimaryButton>
-        </Flex>
+        <MissionValuesCard />
       </Box>
 
       <Box p={4} className="section">
@@ -141,10 +76,10 @@ export default function AboutUs() {
             align={"center"}
             classNames={{ text: "mt-16" }}
           />
-          <TeamForAboutUs />
+          <TeamWithNoFounder />
 
           <SubHeadingText
-            text="Nossas Bolsistas"
+            text="Nossos Bolsistas e Voluntários 2026/2"
             align={"center"}
             classNames={{ text: "mt-16" }}
           />

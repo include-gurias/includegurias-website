@@ -25,7 +25,6 @@ const PartnerImage = ({ name, href, imageUrl }: Partner) => {
             height="100%"
             cursor="pointer"
             transition="filter 0.3s ease-in-out"
-            filter={"grayscale(100%)"}
             scale={0.9}
             _hover={{
               filter: "grayscale(0%)",
