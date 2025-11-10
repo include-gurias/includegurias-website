@@ -23,7 +23,7 @@ import { HeaderMotion, LogoMotion } from "./HeaderMotion";
 
 export default function WithSubnavigation() {
   const { isOpen, onToggle } = useDisclosure();
- 
+
   return (
     <HeaderMotion>
       <>

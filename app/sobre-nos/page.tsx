@@ -52,12 +52,10 @@ export default function AboutUs() {
             span: "mb-8",
           }}
         />
-        
+
         <MissionValuesCard />
-        
       </Box>
 
-  
       <Box p={4} className="section">
         <HeadingText
           text="Nossa Equipe"
