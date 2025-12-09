@@ -79,7 +79,7 @@ export default function AboutUs() {
           <TeamWithNoFounder />
 
           <SubHeadingText
-            text="Nossos Bolsistas e Voluntários 2026/2"
+            text="Nossos Bolsistas e Voluntários 2025/2"
             align={"center"}
             classNames={{ text: "mt-16" }}
           />

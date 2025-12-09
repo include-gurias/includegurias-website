@@ -31,6 +31,7 @@ import {
   VideoCarousel,
   VideoFrame,
   WhatWeDoSection,
+  SeeMoreArrow,
 } from "components";
 import SocialMedia from "types/data/socialMedia";
 import getSocialmediaIcon from "utils/getSocialMediaIcon";
@@ -232,6 +233,16 @@ export default function Home() {
               </GridItem>
             ))}
           </Grid>
+          <div className="mt-6 text-center text-xl font-light text-gray-700">
+          <SeeMoreArrow
+            text="Ver todas as publicações"
+            href="/posts"
+            classNames={{
+              text: "text-blue-500 hover:underline",
+              animatedArrow: "text-blue-500",
+            }}
+          />
+        </div>
         </Box>
         <Box
           p={4}
