@@ -132,3 +132,15 @@ model GuriaTags {
 
   @@unique([guriaId, tagId])
 }
+
+model EventsActivities {
+  id               Int    @id @default(autoincrement())
+  title            String
+  type             String
+  description      String
+  date             String
+  imageUrl         String?
+  showOnHomepage   Boolean   @default(false)
+  details          Json? 
+
+}
