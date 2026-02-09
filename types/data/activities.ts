@@ -5,7 +5,8 @@ export type ActivityType =
   | 'live'
   | 'palestra'
   | 'escolaParceira'
-  | 'snct';
+  | 'SNCT'
+  | 'Outro';
 
 export interface Activity {
   id?: string;
