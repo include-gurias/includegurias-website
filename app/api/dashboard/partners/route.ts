@@ -1,10 +1,13 @@
-import { Partners } from "@prisma/client";
 import { prisma } from "prisma/config";
 
-export async function GET(_request: Request) {
+/**
+ * GET – lista parceiros ordenados
+ */
+export async function GET() {
   try {
-    // Busca todos os parceiros do banco de dados
-    const partners = await prisma.partners.findMany();
+    const partners = await prisma.partners.findMany({
+      orderBy: { order: "asc" },
+    });
 
     return new Response(JSON.stringify(partners), {
       status: 200,
@@ -14,33 +17,37 @@ export async function GET(_request: Request) {
     console.error(error);
     return new Response(JSON.stringify({ error: "Erro no servidor" }), {
       status: 500,
-      headers: { "Content-Type": "application/json" },
     });
   }
 }
 
+/**
+ * PUT – atualiza apenas a ordem dos parceiros
+ */
+type PartnerOrderDTO = {
+  id: number;
+};
+
 export async function PUT(request: Request) {
   try {
-    const newPartners = (await request.json()) as Partners[];
+    const partners = (await request.json()) as PartnerOrderDTO[];
 
-    // Verifica se os parceiros são válidos
-    if (!newPartners || newPartners.length === 0) {
+    if (!partners || partners.length === 0) {
       return new Response(
         JSON.stringify({ error: "Nenhum parceiro informado" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
+        { status: 400 }
       );
     }
 
-    // Deleta todos os parceiros existentes
-    await prisma.partners.deleteMany({});
-
-    // Cria os novos parceiros
-    await prisma.partners.createMany({
-      data: newPartners,
-    });
+    // Atualiza a ordem em transação (mais seguro)
+    await prisma.$transaction(
+      partners.map((partner, index) =>
+        prisma.partners.updateMany({
+          where: { id: partner.id },
+          data: { order: index },
+        })
+      )
+    );
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
@@ -50,7 +57,6 @@ export async function PUT(request: Request) {
     console.error(error);
     return new Response(JSON.stringify({ error: "Erro no servidor" }), {
       status: 500,
-      headers: { "Content-Type": "application/json" },
     });
   }
 }

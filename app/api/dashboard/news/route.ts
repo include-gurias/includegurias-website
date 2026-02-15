@@ -3,8 +3,10 @@ import { prisma } from "prisma/config";
 
 export async function GET(_request: Request) {
   try {
-    // Busca todas as notícias do banco de dados
-    const news = await prisma.news.findMany({});
+    // Busca todas as notícias do banco de dados, ordenado por order
+    const news = await prisma.news.findMany({
+      orderBy: { order: "asc" },
+    });
 
     return new Response(JSON.stringify(news), {
       status: 200,
@@ -34,13 +36,39 @@ export async function PUT(request: Request) {
       );
     }
 
-    // Deleta todas as notícias existentes
-    await prisma.news.deleteMany({});
+    // Atualiza cada notícia com sua nova posição (order)
+    for (let i = 0; i < newNews.length; i++) {
+      const news = newNews[i];
 
-    // Cria as novas notícias
-    await prisma.news.createMany({
-      data: newNews,
-    });
+      if (news.id) {
+        // Update existing news
+        await prisma.news.update({
+          where: { id: news.id },
+          data: {
+            title: news.title,
+            text: news.text,
+            imageUrl: news.imageUrl,
+            date: news.date,
+            href: news.href,
+            showInTimeline: news.showInTimeline,
+            order: i,
+          },
+        });
+      } else {
+        // Create new news
+        await prisma.news.create({
+          data: {
+            title: news.title,
+            text: news.text,
+            imageUrl: news.imageUrl,
+            date: news.date,
+            href: news.href,
+            showInTimeline: news.showInTimeline,
+            order: i,
+          },
+        });
+      }
+    }
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
