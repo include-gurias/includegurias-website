@@ -52,7 +52,7 @@ export const TeamWithNoFounder = () => {
 
   return (
     <Grid
-      templateColumns={{ base: "repeat(2, 1fr)", md: "repeat(3, 1fr)" }}
+      templateColumns={{ base: "repeat(2, 1fr)", md: "repeat(4, 1fr)" }}
       gap={{ base: "2em", md: "4em" }}
       px={{ base: "1rem", md: "2rem" }}
       my={12}
@@ -63,6 +63,7 @@ export const TeamWithNoFounder = () => {
           name={teamMember.name}
           imageUrl={teamMember.imageUrl}
           job={teamMember.job}
+          href={teamMember.href}
         />
       ))}
     </Grid>

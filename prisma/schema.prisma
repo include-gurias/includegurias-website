@@ -135,12 +135,12 @@ model GuriaTags {
 }
 
 model EventsActivities {
-  id             Int     @id @default(autoincrement())
-  title          String
-  type           String
-  description    String
-  date           String
-  imageUrl       String?
-  showOnHomepage Boolean @default(false)
-  details        Json?
+  id               Int    @id @default(autoincrement())
+  title            String
+  type             String
+  description      String
+  date             String
+  imageUrl         String?
+  showOnHomepage   Boolean   @default(false)
+  details          Json? 
 }

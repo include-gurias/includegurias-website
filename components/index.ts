@@ -19,11 +19,12 @@ export { default as FounderCard } from "./Cards/FounderCard";
 export { default as MaterialCard } from "./Cards/MaterialCard";
 export { default as WomanCard } from "./Cards/WomanCard";
 export { default as MissionValuesCard } from "./Cards/MissionValuesCard";
+export { default as EventCard } from "./Cards/EventCard";
 
 // sections
 export { default as NewsSection } from "./News/NewsSection";
 export { default as TestimonialsSection } from "./Testemonials/TestimonialsSection";
-
+export { default as MileStone } from "./MileStone/MileStoneSection";
 // animations
 export { default as Reveal } from "./Animations/Reveal";
 export { default as RevealProps } from "./Animations/Reveal";

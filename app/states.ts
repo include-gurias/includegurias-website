@@ -11,6 +11,7 @@ import SocialMediaPost from "types/data/socialMediaPost";
 import { OldMember, ScholarshipMember, TeamMember } from "types/data/team";
 import Testimonial from "types/data/testimonial";
 import video from "types/data/video";
+import Activity from "types/data/activities";
 
 interface MaterialsState {
   materials: Material[];
@@ -794,6 +795,77 @@ export const useOldMembersStore = create(
     }),
     {
       name: "oldMembers",
+    }
+  )
+);
+
+interface ActivitiesState {
+  activities: Activity[];
+  setActivities: (activities: Activity[]) => void;
+  getActivities: () => Promise<Activity[]>;
+  activitiesLoading: boolean;
+  setLoading: (loading: boolean) => void;
+  updateActivities: (activities: Activity[]) => Promise<void>;
+}
+
+export const useActivitiesStore = create(
+  persist<ActivitiesState>(
+    (set, get) => ({
+      activities: [],
+      activitiesLoading: true,
+      
+      setLoading: (loading) => set({ activitiesLoading: loading }),
+      setActivities: (activities) => set({ activities }),
+      
+      getActivities: async () => {
+        if (get().activities.length === 0) {
+          set({ activitiesLoading: true });
+          try {
+            const response = await fetch("/api/dashboard/events");
+            if (response.ok) {
+              const data = (await response.json()) as Activity[];
+              set({ activities: data });
+              return data;
+            } else {
+              console.error("Erro ao buscar atividades:", response.status);
+              return [];
+            }
+          } catch (error) {
+            console.error("Erro ao buscar atividades:", error);
+            return [];
+          } finally {
+            set({ activitiesLoading: false });
+          }
+        } else {
+          set({ activitiesLoading: false });
+          return get().activities;
+        }
+      },
+      
+      updateActivities: async (activities) => {
+        set({ activitiesLoading: true });
+        try {
+          const response = await fetch("/api/dashboard/events", {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(activities),
+          });
+          if (response.ok) {
+            set({ activities }); 
+          } else {
+            console.error("Erro ao atualizar atividades:", response.status);
+          }
+        } catch (error) {
+          console.error("Erro ao atualizar atividades:", error);
+        } finally {
+          set({ activitiesLoading: false });
+        }
+      },
+    }),
+    {
+      name: "activities-storage", 
     }
   )
 );

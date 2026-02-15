@@ -17,6 +17,8 @@ import {
   MissionValuesCard,
   AboutUsValues,
   TeamWithNoFounder,
+  Partners,
+  MileStone
 } from "components";
 import Material from "types/data/material";
 import getSocialmediaIcon from "utils/getSocialMediaIcon";
@@ -41,9 +43,9 @@ export default function AboutUs() {
     getSocialMedia();
   }, [getSocialMedia]);
 
-  return (
-    <div className="mt-[200px] flex flex-col items-center">
-      <Box p={4} className="section">
+return (
+        <div className="mt-[200px] flex flex-col items-center">
+            <Box p={4} className="section">
         <HeadingText text="Quem somos" align={"start"} />
         <SubText
           text="O Projeto Include Gurias foi criado desde 2016 pela profª. Drª Fabrícia Damando Santos, docente da UERGS. O projeto está vinculado ao Curso de Engenharia de Computação - na unidade em Guaíba/RS."
@@ -56,45 +58,18 @@ export default function AboutUs() {
         <MissionValuesCard />
       </Box>
 
-      <Box p={4} className="section">
-        <HeadingText
-          text="Nossa Equipe"
-          align={"start"}
-          classNames={{ text: "mt-16" }}
-        />
-        <SubText
-          text="Nossa equipe é formada por pessoas incríveis que trabalham juntas para fazer a diferença."
-          align={"start"}
-        />
-        <Flex
-          justifyContent={"center"}
-          flexDirection="column"
-          alignItems="center"
-        >
-          <SubHeadingText
-            text="Nossa Equipe Atual"
-            align={"center"}
-            classNames={{ text: "mt-16" }}
-          />
-          <TeamWithNoFounder />
+            <Box p={4} mt={8} w="full" maxW="7xl">
+                <HeadingText text="Nossa Trajetória e Impacto" align={"center"} />
+                <SubText
+                    text="Conheça os principais marcos e resultados alcançados pelo Include Gurias."
+                    align={"center"}
+                />
+                
+                <MileStone /> 
 
-          <SubHeadingText
-            text="Nossos Bolsistas e Voluntários 2025/2"
-            align={"center"}
-            classNames={{ text: "mt-16" }}
-          />
-          <BolsistasSection />
-
-          <SubHeadingText
-            text="Todas as pessoas que já ajudaram o Include"
-            align={"center"}
-            classNames={{ text: "mt-16" }}
-          />
-          <AllPeople />
-        </Flex>
-      </Box>
-
-      <Box
+            </Box>
+            
+            <Box
         p={4}
         display={"flex"}
         flexDirection={"column"}
@@ -107,8 +82,11 @@ export default function AboutUs() {
           text="Aqui estão algumas das Empresas, Entidades e pessoas que nos apoiam."
           align={"center"}
         />
-        <AllPartners />
+        <Flex w="full">
+          {/*fazer carrossel parceiros*/}
+                  <AllPartners />
+        </Flex>
       </Box>
-    </div>
-  );
+        </div>
+    );
 }

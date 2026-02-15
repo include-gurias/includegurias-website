@@ -5,19 +5,23 @@ import getPlaceholderImageIfNone from "utils/getPlaceholderImageIfNone";
 type PartnerSlideProps = {
   imageUrl: string;
   name: string;
+  priority?: boolean;
 };
 
-const PartnerSlide = ({ imageUrl, name }: PartnerSlideProps) => {
+const PartnerSlide = ({ imageUrl, name, priority = false }: PartnerSlideProps) => {
   return (
-    <div className="absolute inset-0 flex size-full items-center justify-center">
+    <div className="relative flex size-full items-center justify-center">
       <Image
         src={getPlaceholderImageIfNone(imageUrl, 400, 300)}
-        className="size-full object-contain"
-        quality={50}
+        className="object-contain"
+        quality={60}
         fill
-        sizes="(max-width: 250px) 250px, (max-height: 100px) 100px"
-        loading="lazy"
-        alt={name + " logo"}
+        sizes="(max-width: 700px) 150px, 250px"
+        // Mudança principal aqui:
+        priority={priority} 
+        loading={priority ? undefined : "eager"} 
+        decoding="async"
+        alt={`${name} logo`}
       />
     </div>
   );
