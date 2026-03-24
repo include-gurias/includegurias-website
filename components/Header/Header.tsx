@@ -258,10 +258,10 @@ const NAV_ITEMS: Array<NavItem> = [
       },
     ],
   },
-  {
-    label: "Eventos e Atividades",
-    href: "/eventos-e-atividades",
-  },
+ // {
+  //  label: "Eventos e Atividades",
+  //  href: "/eventos-e-atividades",
+ // },
   {
     label: "Contato",
     href: "/contato",
