@@ -3,8 +3,10 @@ import { prisma } from "prisma/config";
 
 export async function GET(_request: Request) {
   try {
-    // Busca todos os membros da equipe do banco de dados
-    const teamMembers = await prisma.teamMember.findMany();
+    // Busca todos os membros da equipe do banco de dados, ordenado por order
+    const teamMembers = await prisma.teamMember.findMany({
+      orderBy: { order: "asc" },
+    });
 
     return new Response(JSON.stringify(teamMembers), {
       status: 200,
@@ -34,13 +36,35 @@ export async function PUT(request: Request) {
       );
     }
 
-    // Deleta todos os membros da equipe existentes
-    await prisma.teamMember.deleteMany({});
+    // Atualiza cada membro da equipe com sua nova posição (order)
+    for (let i = 0; i < newTeamMembers.length; i++) {
+      const member = newTeamMembers[i];
 
-    // Cria os novos membros da equipe
-    await prisma.teamMember.createMany({
-      data: newTeamMembers,
-    });
+      if (member.id) {
+        // Update existing member
+        await prisma.teamMember.update({
+          where: { id: member.id },
+          data: {
+            name: member.name,
+            job: member.job,
+            imageUrl: member.imageUrl,
+            href: member.href,
+            order: i,
+          },
+        });
+      } else {
+        // Create new member
+        await prisma.teamMember.create({
+          data: {
+            name: member.name,
+            job: member.job,
+            imageUrl: member.imageUrl,
+            href: member.href,
+            order: i,
+          },
+        });
+      }
+    }
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,

@@ -6,18 +6,15 @@ import {
   Spinner,
   Stack,
   Switch,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
   Tr,
+  Td,
+  Flex,
 } from "@chakra-ui/react";
 import { ChangeEvent, useEffect, useState } from "react";
 import { BiSave } from "react-icons/bi";
 import { TbPlus } from "react-icons/tb";
 import { usePartnersStore } from "app/states";
-import { HeadingText } from "components";
+import { HeadingText, DraggableList } from "components";
 import Partner from "types/data/partner";
 import DeleteButton from "./DeleteButton";
 
@@ -33,8 +30,15 @@ const Partners = () => {
   );
 
   useEffect(() => {
-    getPartners().then((data) => setPartners(data));
-  }, [getPartners]);
+    getPartners().then((data) => {
+      // Ensure each partner has an id (use index as fallback)
+      const partnersWithIds = data.map((p, idx) => ({
+        ...p,
+        id: p.id || `temp-${idx}`,
+      }));
+      setPartners(partnersWithIds);
+    });
+  }, []);
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>,
@@ -56,6 +60,7 @@ const Partners = () => {
 
   const handleAddPartner = () => {
     const newPartner: Partner = {
+      id: `temp-${Date.now()}`,
       name: "Novo Parceiro",
       imageUrl: "#",
       href: "#",
@@ -105,62 +110,66 @@ const Partners = () => {
     setHasChanged(false);
   };
 
+  const handleReorder = (reorderedPartners: Partner[]) => {
+    setPartners(reorderedPartners);
+    setHasChanged(true);
+  };
+
   return (
     <Box px={4} display="flex" flexDirection="column" gap={4}>
       <HeadingText align="left" text="Todos os Parceiros" />
       {partnersLoading ? (
         <Spinner />
       ) : (
-        <Table variant="striped">
-          <Thead>
-            <Tr>
-              <Th>Nome</Th>
-              <Th>URL</Th>
-              <Th>Image</Th>
-              <Th>Ativo</Th>
-              <Th>Ações</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {partners.map((partner, index) => (
-              <Tr key={index}>
-                <Td>
+        <Box overflowX="auto">
+          <DraggableList
+            items={partners}
+            onReorder={handleReorder}
+            isLoading={partnersLoading}
+            renderItem={(partner, index) => (
+              <Flex width="100%" gap={2} alignItems="center">
+                <Box width="20%" minW="100px">
                   <Input
                     placeholder="Nome do parceiro"
-                    mb={2}
+                    mb={0}
                     defaultValue={partner.name}
                     onChange={(e) => handleInputChange(e, index, "name")}
+                    size="sm"
                   />
-                </Td>
-                <Td>
+                </Box>
+                <Box width="30%" minW="150px">
                   <Input
                     placeholder="Link de redirecionamento"
-                    mb={2}
-                    defaultValue={partner.href}
+                    mb={0}
+                    defaultValue={partner.href || ""}
                     onChange={(e) => handleInputChange(e, index, "href")}
+                    size="sm"
                   />
-                </Td>
-                <Td>
+                </Box>
+                <Box width="30%" minW="150px">
                   <Input
                     placeholder="URL da imagem"
-                    mb={2}
+                    mb={0}
                     defaultValue={partner.imageUrl}
                     onChange={(e) => handleInputChange(e, index, "imageUrl")}
+                    size="sm"
                   />
-                </Td>
-                <Td>
+                </Box>
+                <Box width="10%" minW="80px" display="flex" justifyContent="center">
                   <Switch
                     isChecked={partner.active}
                     onChange={() => handleSwitchChange(index)}
                   />
-                </Td>
-                <Td>
-                  <DeleteButton onDelete={() => handleDeletePartner(index)} />
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
+                </Box>
+                <Box width="10%" minW="80px">
+                  <DeleteButton
+                    onDelete={() => handleDeletePartner(index)}
+                  />
+                </Box>
+              </Flex>
+            )}
+          />
+        </Box>
       )}
       <Stack direction="row" spacing={4}>
         <Button

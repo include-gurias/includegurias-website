@@ -1,13 +1,10 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
@@ -30,16 +27,18 @@ model Material {
   isNew       Boolean @default(false)
   imageUrl    String
   href        String
+  order       Int     @default(0)
 }
 
 model News {
-  id             Int      @id @default(autoincrement())
+  id             Int     @id @default(autoincrement())
   title          String
   text           String
   imageUrl       String
   date           String?
   href           String?
-  showInTimeline Boolean  @default(false)
+  showInTimeline Boolean @default(false)
+  order          Int     @default(0)
 }
 
 model Partners {
@@ -48,6 +47,7 @@ model Partners {
   imageUrl String
   href     String?
   active   Boolean @default(true)
+  order    Int     @default(0)
 }
 
 model PrimaryPageVideos {
@@ -69,15 +69,15 @@ model SocialMedia {
 }
 
 model PrimaryPageSocialMediaPosts {
-  id             Int      @id @default(autoincrement())
+  id             Int     @id @default(autoincrement())
   text           String
   name           String
   subname        String
-  imageUrl       String
   href           String?
   date           String?
-  showInTimeline Boolean  @default(false)
+  showInTimeline Boolean @default(false)
   socialMedia    String
+  imageUrl       String
 }
 
 model TeamMember {
@@ -85,6 +85,7 @@ model TeamMember {
   name     String
   job      String?
   imageUrl String?
+  order    Int     @default(0)
   href     String?
 }
 
@@ -118,9 +119,9 @@ model Guria {
 }
 
 model Tag {
-  id         Int         @id @default(autoincrement())
-  name       String      @unique
-  GuriaTags  GuriaTags[]
+  id        Int         @id @default(autoincrement())
+  name      String      @unique
+  GuriaTags GuriaTags[]
 }
 
 model GuriaTags {
@@ -142,5 +143,4 @@ model EventsActivities {
   imageUrl         String?
   showOnHomepage   Boolean   @default(false)
   details          Json? 
-
 }

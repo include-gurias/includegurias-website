@@ -49,6 +49,9 @@ export { MegaTitle } from "./Text/Headings";
 export { TeamWithNoFounder } from "./Team/Team";
 export { TeamForAboutUs } from "./Team/Team";
 export { default as AllPeople } from "./Team/AllPeople";
+
+// Draggable
+export { DraggableList, type DraggableListItem } from "./DraggableList";
 export { default as BolsistasSection } from "./Team/BolsistasSection";
 
 //About Us
