@@ -9,8 +9,8 @@ import {
   InputRightElement,
   Stack,
 } from "@chakra-ui/react";
-import { redirect } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation"; // Mudança importante aqui!
+import { FormEvent, useEffect, useState } from "react";
 import { FaEye, FaEyeSlash, FaLock, FaUserAlt } from "react-icons/fa";
 import useAuthStore from "./authStore";
 
@@ -18,23 +18,27 @@ const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 
 const FormLogin = () => {
+  const router = useRouter(); // Instanciando o router
   const [showPassword, setShowPassword] = useState(false);
   const handleShowClick = () => setShowPassword(!showPassword);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { login, isLoggedIn } = useAuthStore();
+  const login = useAuthStore((state) => state.login);
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
 
-  if (isLoggedIn) {
-    redirect("/admin/dashboard");
-  }
+  useEffect(() => {
+    if (isLoggedIn) {
+      router.push("/admin/dashboard");
+    }
+  }, [isLoggedIn, router]);
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     try {
       await login(email, password);
-      redirect("/admin/dashboard");
+      router.push("/admin/dashboard");
     } catch (error: any) {
       alert(error.message);
     }

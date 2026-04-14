@@ -10,17 +10,16 @@ import "./embla.css";
 const OPTIONS: EmblaOptionsType = { loop: true, slidesToScroll: "auto" };
 
 const TestimonialsCarousel = () => {
-  const [testimonials] = useTestimonialsStore((state) => [state.testimonials]);
-  const { getTestimonials, loading } = useTestimonialsStore((state) => ({
-    getTestimonials: state.getTestimonials,
-    loading: state.testimonial_loading,
-  }));
+  const testimonials = useTestimonialsStore((state) => state.testimonials);
+  const getTestimonials = useTestimonialsStore(
+    (state) => state.getTestimonials
+  );
+  const loading = useTestimonialsStore((state) => state.testimonial_loading);
 
   useEffect(() => {
     getTestimonials();
   }, [getTestimonials]);
 
-  // return <EmblaCarousel slides={testimonials} options={OPTIONS} />
   return (
     <>
       {loading ? (

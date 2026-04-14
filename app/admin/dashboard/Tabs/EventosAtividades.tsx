@@ -15,13 +15,15 @@ import {
   Switch,
   Textarea,
   useStyleConfig,
+  Flex,
+  Image,
 } from "@chakra-ui/react";
 import { ChangeEvent, useEffect, useState } from "react";
 import { BiSave } from "react-icons/bi";
-import { TbPlus } from "react-icons/tb";
+import { TbPlus, TbUpload } from "react-icons/tb";
 import { HeadingText } from "components";
 import DeleteButton from "./DeleteButton";
-import {useActivitiesStore} from "app/states";
+import { useActivitiesStore } from "app/states";
 import Activity from "types/data/activities";
 
 const TIPOS_ATIVIDADE = [
@@ -36,22 +38,54 @@ const TIPOS_ATIVIDADE = [
 const EventsActivities = () => {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [hasChanged, setHasChanged] = useState(false);
+  const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
 
   const selectStyles = useStyleConfig("Input", {});
 
-  const { getActivities, updateActivities, activitiesLoading } = useActivitiesStore(
-    (state: any) => ({
-      getActivities: state.getActivities,
-      updateActivities: state.updateActivities,
-      activitiesLoading: state.activitiesLoading,
-    })
-  );
+const getActivities = useActivitiesStore((state) => state.getActivities);
+const updateActivities = useActivitiesStore((state) => state.updateActivities);
+const activitiesLoading = useActivitiesStore((state) => state.activitiesLoading);
 
-  useEffect(() => {
-    getActivities().then((data: Activity[]) => {
-      setActivities(data);
-    });
-  }, [getActivities]);
+useEffect(() => {
+  getActivities().then((data: Activity[]) => {
+    setActivities(data);
+  });
+}, [getActivities]); // Agora a referência é estável!
+
+  const handleFileChange = async (
+    e: ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploadingIndex(index);
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error("Falha no upload");
+
+      const data = await response.json();
+
+      setActivities((prev) =>
+        prev.map((activity, i) =>
+          i === index ? { ...activity, imageUrl: data.url } : activity
+        )
+      );
+      setHasChanged(true);
+    } catch (error) {
+      console.error(error);
+      alert("Erro ao fazer upload da imagem.");
+    } finally {
+      setUploadingIndex(null);
+    }
+  };
 
   const handleAddActivity = () => {
     setHasChanged(true);
@@ -160,9 +194,7 @@ const EventsActivities = () => {
             </FormLabel>
             <Input
               defaultValue={detailValue("empresaVisitada")}
-              onChange={(e) =>
-                handleDetailsChange(e, index, "empresaVisitada")
-              }
+              onChange={(e) => handleDetailsChange(e, index, "empresaVisitada")}
               placeholder="Empresa Visitada"
             />
             <Input
@@ -229,10 +261,10 @@ const EventsActivities = () => {
       minH="100vh"
       py={8}
     >
-      <HeadingText align="left" text="Gerenciamento de Eventos e Atividades" />
+      <HeadingText align="left" text="Eventos e Atividades" />
 
       {activitiesLoading ? (
-        <Spinner/>
+        <Spinner />
       ) : (
         <Accordion
           border={"1px solid"}
@@ -244,8 +276,7 @@ const EventsActivities = () => {
             <AccordionItem key={activity.id || index} borderTopWidth="1px">
               <h2>
                 <AccordionButton>
-                  <Box flex="1" textAlign="left"
-                  >
+                  <Box flex="1" textAlign="left">
                     {activity.title} (
                     {TIPOS_ATIVIDADE.find((t) => t.value === activity.type)
                       ?.label || "Sem Tipo"}
@@ -264,8 +295,8 @@ const EventsActivities = () => {
                       as="select"
                       value={activity.type}
                       onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-      handleActivityChange(e, index, "type")
-    }
+                        handleActivityChange(e, index, "type")
+                      }
                       sx={selectStyles}
                     >
                       {TIPOS_ATIVIDADE.map((tipo) => (
@@ -295,15 +326,63 @@ const EventsActivities = () => {
                       rows={3}
                     />
                   </FormControl>
+
+                  {/* --- CAMPO DE UPLOAD DA IMAGEM --- */}
                   <FormControl>
-                    <FormLabel>URL da Imagem</FormLabel>
-                    <Input
-                      defaultValue={activity.imageUrl}
-                      onChange={(e) => handleActivityChange(e, index, "imageUrl")}
-                      placeholder="URL da imagem de capa"
-                      type="url"
-                    />
+                    <FormLabel>Imagem de Capa</FormLabel>
+                    <Flex gap={4} alignItems="center">
+                      <Box flexShrink={0}>
+                        {activity.imageUrl ? (
+                          <Image
+                            src={activity.imageUrl}
+                            alt="Prévia"
+                            boxSize="80px"
+                            objectFit="cover"
+                            borderRadius="md"
+                            fallback={
+                              <Box
+                                boxSize="80px"
+                                bg="gray.200"
+                                borderRadius="md"
+                              />
+                            }
+                          />
+                        ) : (
+                          <Box
+                            boxSize="80px"
+                            bg="gray.100"
+                            borderRadius="md"
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                          >
+                            <TbUpload size={24} color="gray" />
+                          </Box>
+                        )}
+                      </Box>
+                      <Box>
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleFileChange(e, index)}
+                          display="none"
+                          id={`activity-upload-${index}`}
+                        />
+                        <Button
+                          as="label"
+                          htmlFor={`activity-upload-${index}`}
+                          variant="outline"
+                          colorScheme="blue"
+                          leftIcon={<TbUpload />}
+                          cursor="pointer"
+                          isLoading={uploadingIndex === index}
+                        >
+                          {activity.imageUrl ? "Alterar Capa" : "Fazer Upload"}
+                        </Button>
+                      </Box>
+                    </Flex>
                   </FormControl>
+
                   <FormControl>
                     <FormLabel>Data de Realização</FormLabel>
                     <Input
@@ -346,7 +425,9 @@ const EventsActivities = () => {
         <Button
           colorScheme="blue"
           rightIcon={<BiSave />}
-          isDisabled={!hasChanged || activitiesLoading}
+          isDisabled={
+            !hasChanged || activitiesLoading || uploadingIndex !== null
+          }
           onClick={handleSave}
           isLoading={activitiesLoading}
         >

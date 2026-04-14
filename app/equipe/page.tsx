@@ -33,13 +33,12 @@ export default function TeamSection() {
           gap={4}
           mb={16}
         >
-
-         {/*<SubHeadingText
+          {/*<SubHeadingText
             text="????"
             align={"center"}
             classNames={{ text: "mt-16" }}
           />
-          */} 
+          */}
           <TeamWithNoFounder />
 
           <SubHeadingText

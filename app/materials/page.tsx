@@ -16,22 +16,21 @@ import { ConfettiLight } from "public";
 import Material from "types/data/material";
 
 export default function OurMaterials() {
-  const { getMaterials, loading, materials } = useMaterialsStore((state) => ({
-    getMaterials: state.getMaterials,
-    loading: state.materials_loading,
-    materials: state.materials,
-  }));
+  // --- STORES CORRIGIDOS ---
+  const getMaterials = useMaterialsStore((state) => state.getMaterials);
+  const loading = useMaterialsStore((state) => state.materials_loading);
+  const materials = useMaterialsStore((state) => state.materials);
 
   useEffect(() => {
     getMaterials();
-  }, [getMaterials]);
+  }, [getMaterials]); // Agora a referência é estável e a busca acontece só uma vez!
 
   return (
     <Flex
       align="center"
       justify="center"
       css={{
-        backgroundImage: ConfettiLight,
+      //  backgroundImage: ConfettiLight,
         backgroundAttachment: "fixed",
       }}
       id="contact"

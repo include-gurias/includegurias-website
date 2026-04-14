@@ -18,28 +18,30 @@ export default function Partners() {
 
   return (
     <div className="container mx-auto flex flex-col items-center justify-center space-y-8">
-      <div 
+      <div
         ref={containerRef}
-        className="marquee marquee--8" 
+        className="marquee marquee--8"
         id="first-line"
-        style={{ 
-          "--marquee-items": partners.length 
-        } as React.CSSProperties}
+        style={
+          {
+            "--marquee-items": partners.length,
+          } as React.CSSProperties
+        }
       >
         {partners.map((partner, index) => (
-  <motion.div
-    key={partner.name || index}
-    className="marquee__item"
-    style={{ "--marquee-item-index": index + 1 } as React.CSSProperties}
-    // ... animações
-  >
-    <PartnerSlide 
-      imageUrl={partner.imageUrl} 
-      name={partner.name} 
-      priority={index < 4} 
-    />
-  </motion.div>
-))}
+          <motion.div
+            key={partner.name || index}
+            className="marquee__item"
+            style={{ "--marquee-item-index": index + 1 } as React.CSSProperties}
+            // ... animações
+          >
+            <PartnerSlide
+              imageUrl={partner.imageUrl}
+              name={partner.name}
+              priority={index < 4}
+            />
+          </motion.div>
+        ))}
       </div>
     </div>
   );

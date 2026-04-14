@@ -1,12 +1,11 @@
 "use client";
-import {Button, Container, Flex, Grid, GridItem } from "@chakra-ui/react";
+import { Button, Container, Flex, Grid, GridItem } from "@chakra-ui/react";
 import Link from "next/link";
-import { HeadingText, NewsCard} from "components";
+import { HeadingText, NewsCard } from "components";
 import { useNewsStore } from "app/states";
 import { useEffect } from "react";
 
 const News = () => {
-
   const { getNews, news } = useNewsStore((state) => ({
     getNews: state.getNews,
     news: state.news,
@@ -52,7 +51,11 @@ const News = () => {
       <HeadingText text="Todas as Notícias" align="center" />
 
       <Grid
-        templateColumns={{ base: "repeat(1, 1fr)", sm: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }}
+        templateColumns={{
+          base: "repeat(1, 1fr)",
+          sm: "repeat(2, 1fr)",
+          lg: "repeat(3, 1fr)",
+        }}
         gap={8}
         w="full"
         px={4}
@@ -63,12 +66,12 @@ const News = () => {
           </GridItem>
         ))}
       </Grid>
-      
+
       <Link href="/">
         <Button
-        mt={4}
-          className="rounded-xl bg-rose-500 px-6 py-3 font-bold text-white hover:bg-rose-700 transition-colors mt-12 shadow-md"
-        size="md"
+          mt={4}
+          className="mt-12 rounded-xl bg-rose-500 px-6 py-3 font-bold text-white shadow-md transition-colors hover:bg-rose-700"
+          size="md"
         >
           Voltar para Início
         </Button>

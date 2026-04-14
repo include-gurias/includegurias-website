@@ -1,12 +1,12 @@
 export type ActivityType =
-  | 'oficina'
-  | 'visitaTecnica'
-  | 'curso'
-  | 'live'
-  | 'palestra'
-  | 'escolaParceira'
-  | 'SNCT'
-  | 'Outro';
+  | "oficina"
+  | "visitaTecnica"
+  | "curso"
+  | "live"
+  | "palestra"
+  | "escolaParceira"
+  | "SNCT"
+  | "Outro";
 
 export interface Activity {
   id?: string;

@@ -55,7 +55,7 @@ const WhatWeDoSection = () => {
             programa Meninas Digitais da Sociedade Brasileira de Computação.
           </Text>
         </Reveal>
-        <SeeMoreArrow text="Sobre nós" href="/sobre-nos" delay={0.5} />
+        <SeeMoreArrow text="Saiba Mais" href="/sobre-nos" delay={0.5} />
       </Flex>
 
       <Grid

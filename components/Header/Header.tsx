@@ -245,23 +245,13 @@ const NAV_ITEMS: Array<NavItem> = [
     href: "/materials",
   },
   {
-    label: "Sobre nós",
-    href: "#",
-    children: [
-      {
-        label: "Quem somos",
-        href: "/sobre-nos",
-      },
-      {
-        label: "Equipe",
-        href: "/equipe",
-      },
-    ],
+    label: "Saiba Mais",
+    href: "/sobre-nos",
   },
- // {
+  // {
   //  label: "Eventos e Atividades",
   //  href: "/eventos-e-atividades",
- // },
+  // },
   {
     label: "Contato",
     href: "/contato",

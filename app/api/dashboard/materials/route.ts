@@ -25,8 +25,11 @@ export async function PUT(request: Request) {
   try {
     const newMaterials = (await request.json()) as Material[];
 
-    //check se os materiais são válidos
-    if (!newMaterials || newMaterials.length === 0) {
+    if (
+      !newMaterials ||
+      !Array.isArray(newMaterials) ||
+      newMaterials.length === 0
+    ) {
       return new Response(
         JSON.stringify({ error: "Nenhum material informado" }),
         {
@@ -36,9 +39,15 @@ export async function PUT(request: Request) {
       );
     }
 
-    // Atualiza cada material com sua nova posição (order)
     for (let i = 0; i < newMaterials.length; i++) {
       const material = newMaterials[i];
+
+      if (!material || !material.title || !material.href) {
+        console.warn(
+          `Material no índice ${i} ignorado por falta de dados obrigatórios.`
+        );
+        continue;
+      }
 
       if (material.id) {
         // Update existing material
@@ -46,21 +55,20 @@ export async function PUT(request: Request) {
           where: { id: material.id },
           data: {
             title: material.title,
-            description: material.description,
-            isNew: material.isNew,
+            description: material.description ?? "",
+            isNew: !!material.isNew,
             imageUrl: material.imageUrl,
             href: material.href,
             order: i,
           },
         });
       } else {
-        // Create new material
         await prisma.material.create({
           data: {
             title: material.title,
-            description: material.description,
-            isNew: material.isNew,
-            imageUrl: material.imageUrl,
+            description: material.description ?? "",
+            isNew: material.isNew ?? false,
+            imageUrl: material.imageUrl ?? "",
             href: material.href,
             order: i,
           },

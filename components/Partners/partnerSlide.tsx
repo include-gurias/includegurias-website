@@ -8,7 +8,11 @@ type PartnerSlideProps = {
   priority?: boolean;
 };
 
-const PartnerSlide = ({ imageUrl, name, priority = false }: PartnerSlideProps) => {
+const PartnerSlide = ({
+  imageUrl,
+  name,
+  priority = false,
+}: PartnerSlideProps) => {
   return (
     <div className="relative flex size-full items-center justify-center">
       <Image
@@ -18,8 +22,8 @@ const PartnerSlide = ({ imageUrl, name, priority = false }: PartnerSlideProps) =
         fill
         sizes="(max-width: 700px) 150px, 250px"
         // Mudança principal aqui:
-        priority={priority} 
-        loading={priority ? undefined : "eager"} 
+        priority={priority}
+        loading={priority ? undefined : "lazy"}
         decoding="async"
         alt={`${name} logo`}
       />

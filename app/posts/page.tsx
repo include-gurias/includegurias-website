@@ -4,13 +4,15 @@ import { Button, Container, Flex, Grid, GridItem } from "@chakra-ui/react";
 import Link from "next/link";
 import { HeadingText, SocialMediaCard } from "components";
 import { useEffect } from "react";
-import { useSocialMediaPostsStore } from "app/states"; 
+import { useSocialMediaPostsStore } from "app/states";
 
 const PostsPage = () => {
-  const { getSocialMediaPosts, socialMediaPosts } = useSocialMediaPostsStore((state) => ({
-    getSocialMediaPosts: state.getSocialMediaPosts,
-    socialMediaPosts: state.socialMediaPosts,
-  }));
+  const { getSocialMediaPosts, socialMediaPosts } = useSocialMediaPostsStore(
+    (state) => ({
+      getSocialMediaPosts: state.getSocialMediaPosts,
+      socialMediaPosts: state.socialMediaPosts,
+    })
+  );
 
   useEffect(() => {
     if (socialMediaPosts.length === 0) {
@@ -52,7 +54,11 @@ const PostsPage = () => {
       <HeadingText text="Todas as Publicações" align="center" />
 
       <Grid
-        templateColumns={{ base: "repeat(1, 1fr)", sm: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }}
+        templateColumns={{
+          base: "repeat(1, 1fr)",
+          sm: "repeat(2, 1fr)",
+          lg: "repeat(3, 1fr)",
+        }}
         gap={8}
         w="full"
         px={4}
@@ -69,15 +75,15 @@ const PostsPage = () => {
           </GridItem>
         ))}
       </Grid>
-      
+
       <Link href="/">
         <Button
-            mt={4}
-                className="rounded-xl bg-rose-500 px-6 py-3 font-bold text-white hover:bg-rose-700 transition-colors mt-12 shadow-md"
-                size="md"
-                >
-                  Voltar para Início
-                </Button>
+          mt={4}
+          className="mt-12 rounded-xl bg-rose-500 px-6 py-3 font-bold text-white shadow-md transition-colors hover:bg-rose-700"
+          size="md"
+        >
+          Voltar para Início
+        </Button>
       </Link>
     </Container>
   );

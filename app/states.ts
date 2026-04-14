@@ -30,29 +30,25 @@ export const useMaterialsStore = create(
       setLoading: (loading) => set({ materials_loading: loading }),
       setMaterials: (materials) => set({ materials }),
       getMaterials: async () => {
-        if (get().materials.length === 0) {
-          set({ materials_loading: true });
-          try {
-            const response = await fetch("/api/dashboard/materials");
-            if (response.ok) {
-              const data = (await response.json()) as Material[];
-              set({ materials: data });
-              return data;
-            } else {
-              console.error("Erro ao buscar materiais:", response.status);
-              return [];
-            }
-          } catch (error) {
-            console.error("Erro ao buscar materiais:", error);
-            return [];
-          } finally {
-            set({ materials_loading: false });
-          }
-        } else {
-          set({ materials_loading: false });
-          return get().materials;
-        }
-      },
+  // Remova o "if (length === 0)". Deixe ele buscar sempre!
+  set({ materials_loading: true });
+  try {
+    const response = await fetch("/api/dashboard/materials");
+    if (response.ok) {
+      const data = (await response.json()) as Material[];
+      set({ materials: data }); 
+      return data;
+    } else {
+      console.error("Erro ao buscar materiais:", response.status);
+      return get().materials; 
+    }
+  } catch (error) {
+    console.error("Erro ao buscar materiais:", error);
+    return get().materials;
+  } finally {
+    set({ materials_loading: false });
+  }
+},
       updateMaterials: async (materials) => {
         set({ materials_loading: true });
         try {
@@ -813,10 +809,10 @@ export const useActivitiesStore = create(
     (set, get) => ({
       activities: [],
       activitiesLoading: true,
-      
+
       setLoading: (loading) => set({ activitiesLoading: loading }),
       setActivities: (activities) => set({ activities }),
-      
+
       getActivities: async () => {
         if (get().activities.length === 0) {
           set({ activitiesLoading: true });
@@ -841,7 +837,7 @@ export const useActivitiesStore = create(
           return get().activities;
         }
       },
-      
+
       updateActivities: async (activities) => {
         set({ activitiesLoading: true });
         try {
@@ -853,7 +849,7 @@ export const useActivitiesStore = create(
             body: JSON.stringify(activities),
           });
           if (response.ok) {
-            set({ activities }); 
+            set({ activities });
           } else {
             console.error("Erro ao atualizar atividades:", response.status);
           }
@@ -865,7 +861,7 @@ export const useActivitiesStore = create(
       },
     }),
     {
-      name: "activities-storage", 
+      name: "activities-storage",
     }
   )
 );

@@ -15,11 +15,9 @@ const NewsCard = ({ title, text, imageUrl, href, date }: News) => {
       className="group relative w-full transition-shadow duration-300 ease-in-out"
       transition="all 0.3s ease-in-out"
       _hover={{ shadow: "lg", transform: "translateY(-4px)" }}
-      
-      w="full" 
-      h="full" 
-      
-      as={Flex} 
+      w="full"
+      h="full"
+      as={Flex}
       direction="column"
     >
       <Box
@@ -55,11 +53,11 @@ const NewsCard = ({ title, text, imageUrl, href, date }: News) => {
           </Box>
         )}
       </Box>
-      
-      <Flex 
-        p={4} 
-        w="full" 
-        direction="column" 
+
+      <Flex
+        p={4}
+        w="full"
+        direction="column"
         flexGrow={1}
         justifyContent="space-between"
       >
@@ -67,23 +65,29 @@ const NewsCard = ({ title, text, imageUrl, href, date }: News) => {
           <Text id="text" fontSize="lg" fontWeight="bold" mb={2}>
             {title}
           </Text>
-          <Text 
-            id="text" 
-            fontSize="md" 
-            color="gray.500" 
+          <Text
+            id="text"
+            fontSize="md"
+            color="gray.500"
             mb={4}
-            style={{ 
-                display: '-webkit-box', 
-                WebkitBoxOrient: 'vertical', 
-                WebkitLineClamp: 3, 
-                overflow: 'hidden' 
+            style={{
+              display: "-webkit-box",
+              WebkitBoxOrient: "vertical",
+              WebkitLineClamp: 3,
+              overflow: "hidden",
             }}
           >
             {text}
           </Text>
         </Box>
 
-        <Flex justify="space-between" align="center" pt={2} borderTop="1px solid" borderTopColor="gray.100">
+        <Flex
+          justify="space-between"
+          align="center"
+          pt={2}
+          borderTop="1px solid"
+          borderTopColor="gray.100"
+        >
           {href && (
             <Link href={href} className="text-blue-500 hover:underline">
               Leia mais

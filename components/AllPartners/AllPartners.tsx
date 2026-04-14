@@ -69,6 +69,7 @@ const AllPartners = () => {
       {partners.map((partner: Partner, index: number) => (
         <Reveal key={partner.name} delay={index * 0.1} className="mb-4">
           <PartnerImage
+            id={partner.id}
             name={partner.name}
             href={partner.href}
             imageUrl={partner.imageUrl}

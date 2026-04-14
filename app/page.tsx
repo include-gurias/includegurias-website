@@ -38,22 +38,19 @@ import getSocialmediaIcon from "utils/getSocialMediaIcon";
 import { useSocialMediaPostsStore, useSocialMediaStore } from "./states";
 
 export default function Home() {
-  const { getSocialMedia, socialMedia } = useSocialMediaStore((state) => ({
-    getSocialMedia: state.getSocialMedia,
-    socialMediaLoading: state.socialMediaLoading,
-    socialMedia: state.socialMedia,
-  }));
+  const getSocialMedia = useSocialMediaStore((state) => state.getSocialMedia);
+  const socialMedia = useSocialMediaStore((state) => state.socialMedia);
+
+  const getSocialMediaPosts = useSocialMediaPostsStore(
+    (state) => state.getSocialMediaPosts
+  );
+  const socialMediaPosts = useSocialMediaPostsStore(
+    (state) => state.socialMediaPosts
+  );
 
   useEffect(() => {
     getSocialMedia();
   }, [getSocialMedia]);
-
-  const { getSocialMediaPosts, socialMediaPosts } = useSocialMediaPostsStore(
-    (state) => ({
-      getSocialMediaPosts: state.getSocialMediaPosts,
-      socialMediaPosts: state.socialMediaPosts,
-    })
-  );
 
   useEffect(() => {
     getSocialMediaPosts();
@@ -108,7 +105,7 @@ export default function Home() {
             >
               <Link href="/sobre-nos" passHref>
                 <PrimaryButton icon={<IoIosPeople size={25} />}>
-                  Sobre nós
+                  Saiba Mais
                 </PrimaryButton>
               </Link>
               <Link href="/contato" passHref>
@@ -136,7 +133,7 @@ export default function Home() {
             />
             <Box maxW={750} boxShadow={"2xl"} rounded={"md"} zIndex={2}>
               <VideoFrame
-                loading="eager"
+                loading="lazy"
                 embedId="ErGaw5yISjc?si"
                 title="Projeto Include Gurias"
                 allowFullScreen
@@ -190,17 +187,17 @@ export default function Home() {
         >
           <HeadingText text="Siga o Include" align="center" />
           <div className="mb-6 grid grid-cols-3 justify-items-center gap-4 sm:flex-wrap sm:justify-center md:flex">
-            {socialMedia.map((socialMedia: SocialMedia, index: number) => (
+            {socialMedia.map((media: SocialMedia, index: number) => (
               <SocialButton
-                key={socialMedia.name + index}
+                key={media.name + index}
                 size={45}
-                label={socialMedia.name}
-                href={socialMedia.href}
+                label={media.name}
+                href={media.href}
                 animation="rotateHover"
                 delay={index * 0.1}
               >
                 {getSocialmediaIcon({
-                  socialMedia: socialMedia.name,
+                  socialMedia: media.name,
                   props: { size: 24 },
                 })}
               </SocialButton>
@@ -234,15 +231,15 @@ export default function Home() {
             ))}
           </Grid>
           <div className="mt-6 text-center text-xl font-light text-gray-700">
-          <SeeMoreArrow
-            text="Ver todas as publicações"
-            href="/posts"
-            classNames={{
-              text: "text-blue-500 hover:underline",
-              animatedArrow: "text-blue-500",
-            }}
-          />
-        </div>
+            <SeeMoreArrow
+              text="Ver todas as publicações"
+              href="/posts"
+              classNames={{
+                text: "text-blue-500 hover:underline",
+                animatedArrow: "text-blue-500",
+              }}
+            />
+          </div>
         </Box>
         <Box
           p={4}
