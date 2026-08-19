@@ -3,8 +3,10 @@ import { prisma } from "prisma/config";
 
 export async function GET(_request: Request) {
   try {
-    // Busca todos os materiais do banco de dados
-    const materials = await prisma.material.findMany({});
+    // Busca todos os materiais do banco de dados, ordenado por order
+    const materials = await prisma.material.findMany({
+      orderBy: { order: "asc" },
+    });
 
     return new Response(JSON.stringify(materials), {
       status: 200,
@@ -23,8 +25,11 @@ export async function PUT(request: Request) {
   try {
     const newMaterials = (await request.json()) as Material[];
 
-    //check se os materiais são válidos
-    if (!newMaterials || newMaterials.length === 0) {
+    if (
+      !newMaterials ||
+      !Array.isArray(newMaterials) ||
+      newMaterials.length === 0
+    ) {
       return new Response(
         JSON.stringify({ error: "Nenhum material informado" }),
         {
@@ -34,13 +39,42 @@ export async function PUT(request: Request) {
       );
     }
 
-    // Deleta todos os materiais existentes
-    await prisma.material.deleteMany({});
+    for (let i = 0; i < newMaterials.length; i++) {
+      const material = newMaterials[i];
 
-    // Cria os novos materiais
-    await prisma.material.createMany({
-      data: newMaterials,
-    });
+      if (!material || !material.title || !material.href) {
+        console.warn(
+          `Material no índice ${i} ignorado por falta de dados obrigatórios.`
+        );
+        continue;
+      }
+
+      if (material.id) {
+        // Update existing material
+        await prisma.material.update({
+          where: { id: material.id },
+          data: {
+            title: material.title,
+            description: material.description ?? "",
+            isNew: !!material.isNew,
+            imageUrl: material.imageUrl,
+            href: material.href,
+            order: i,
+          },
+        });
+      } else {
+        await prisma.material.create({
+          data: {
+            title: material.title,
+            description: material.description ?? "",
+            isNew: material.isNew ?? false,
+            imageUrl: material.imageUrl ?? "",
+            href: material.href,
+            order: i,
+          },
+        });
+      }
+    }
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,

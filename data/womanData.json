@@ -3,7 +3,13 @@
     "id": 50,
     "name": "Fabrícia Damando",
     "job": "Cientista da Computação",
-    "tags": ["Cientista da Computação", "Engenheira da Computação", "Professora", "Pesquisadora", "UERGS"],
+    "tags": [
+      "Cientista da Computação",
+      "Engenheira da Computação",
+      "Professora",
+      "Pesquisadora",
+      "UERGS"
+    ],
     "imageUrl": "FabriciaDamando",
 
     "bio": "Possui doutorado em Informática na Educação pela UFRGS, coordenadora do Projeto #Include<GURIAS> e projeto de Aprendizagem Criativa, especialista em Mídias na Educação.",
@@ -390,7 +396,12 @@
     "id": 30,
     "name": "Liane Tarouco",
     "job": "Cientista da Computação",
-    "tags": ["Cientista da Computação", "Engenheira da Computação", "Professora", "Pesquisadora"],
+    "tags": [
+      "Cientista da Computação",
+      "Engenheira da Computação",
+      "Professora",
+      "Pesquisadora"
+    ],
     "imageUrl": "LianeTarouco",
     "bio": "Referência nacional em redes de computadores, considerada a mãe das redes no Brasil. Publicou o primeiro livro sobre o tema no país em 1977 e é Mestre em Ciências da Computação e Doutora em Engenharia Elétrica.",
     "birthDate": "01-01-1960",
@@ -478,7 +489,12 @@
     "id": 38,
     "name": "Mary Kenneth",
     "job": "Cientista da Computação",
-    "tags": ["Cientista da Computação", "Professora", "Pesquisadora", "Matemática"],
+    "tags": [
+      "Cientista da Computação",
+      "Professora",
+      "Pesquisadora",
+      "Matemática"
+    ],
     "imageUrl": "MaryKenneth",
     "bio": "Primeira mulher a receber um doutorado em ciência da computação, contribuiu para o desenvolvimento da linguagem de programação BASIC e previu o surgimento de inteligências artificiais.",
     "birthDate": "01-01-1906",
@@ -522,7 +538,12 @@
     "id": 42,
     "name": "Radia Perlman",
     "job": "Cientista da Computação",
-    "tags": ["Cientista da Computação", "Engenheira da Computação", "Professora", "Pesquisadora"],
+    "tags": [
+      "Cientista da Computação",
+      "Engenheira da Computação",
+      "Professora",
+      "Pesquisadora"
+    ],
     "imageUrl": "RadiaPerlman",
     "bio": "Cientista da computação conhecida como a 'mãe da Internet', inventou o Protocolo Spanning Tree (STP) e contribuiu significativamente para a robustez e escalabilidade da Internet.",
     "birthDate": "18-12-1951",
@@ -533,7 +554,12 @@
     "id": 43,
     "name": "Rosa Maria Vicari",
     "job": "Inteligência Artificial",
-    "tags": ["Inteligência Artificial", "Professora", "Cientista", "Pesquisadora"],
+    "tags": [
+      "Inteligência Artificial",
+      "Professora",
+      "Cientista",
+      "Pesquisadora"
+    ],
     "imageUrl": "RosaMariaVicari",
     "bio": "Professora de Ciência da Computação com foco em Inteligência Artificial aplicada à Educação, atuando com Sistemas Tutores Inteligentes e Sistemas Multiagentes.",
     "birthDate": "01-01-1960",

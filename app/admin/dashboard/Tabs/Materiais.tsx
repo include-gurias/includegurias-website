@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Accordion,
   AccordionButton,
@@ -14,10 +15,12 @@ import {
   Stack,
   Switch,
   Textarea,
+  Flex,
+  Image,
 } from "@chakra-ui/react";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState, useCallback } from "react";
 import { BiSave } from "react-icons/bi";
-import { TbPlus } from "react-icons/tb";
+import { TbPlus, TbUpload } from "react-icons/tb";
 import { useMaterialsStore } from "app/states";
 import { HeadingText } from "components";
 import Material from "types/data/material";
@@ -25,205 +28,225 @@ import DeleteButton from "./DeleteButton";
 
 const Materiais = () => {
   const [hasChanged, setHasChanged] = useState(false);
-  const [IncludeMaterials, setIncludeMaterials] = useState<Material[]>([]);
+  const [includeMaterials, setIncludeMaterials] = useState<Material[]>([]);
+  const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
 
-  const { loading, getMaterials, updateMaterials } = useMaterialsStore(
-    (state) => ({
-      loading: state.materials_loading,
-      getMaterials: state.getMaterials,
-      updateMaterials: state.updateMaterials,
-    })
-  );
+  const loading = useMaterialsStore((state) => state.materials_loading);
+  const getMaterials = useMaterialsStore((state) => state.getMaterials);
+  const updateMaterials = useMaterialsStore((state) => state.updateMaterials);
 
   useEffect(() => {
+    let isMounted = true;
     getMaterials().then((data) => {
-      if (data) {
+      if (data && isMounted) {
         setIncludeMaterials(data);
       }
     });
+    return () => { isMounted = false; };
   }, [getMaterials]);
+
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>, index: number) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploadingIndex(index);
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error("Falha no upload");
+
+      const data = await response.json();
+
+      setIncludeMaterials((prev) =>
+        prev.map((mat, i) => (i === index ? { ...mat, imageUrl: data.url } : mat))
+      );
+      setHasChanged(true);
+    } catch (error) {
+      console.error(error);
+      alert("Erro ao fazer upload da imagem.");
+    } finally {
+      setUploadingIndex(null);
+    }
+  };
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     index: number,
     type: keyof Material
   ) => {
-    if (
-      index < 0 ||
-      index >= IncludeMaterials.length ||
-      !IncludeMaterials[index]
-    ) {
-      return;
-    }
-
-    setIncludeMaterials((prevMaterials) =>
-      prevMaterials.map((material, i) =>
-        i === index ? { ...material, [type]: e.target.value } : material
-      )
+    const value = e.target.value;
+    setIncludeMaterials((prev) =>
+      prev.map((mat, i) => (i === index ? { ...mat, [type]: value } : mat))
     );
     setHasChanged(true);
   };
 
   const handleSwitchChange = (index: number) => {
-    try {
-      if (
-        index < 0 ||
-        index >= IncludeMaterials.length ||
-        !IncludeMaterials[index]
-      )
-        return;
-      setIncludeMaterials((prevMaterials) => {
-        return prevMaterials.map((material, i) =>
-          i === index
-            ? { ...material, isNew: material.isNew ? false : true }
-            : material
-        );
-      });
-      setHasChanged(true);
-    } catch (error) {
-      console.error(error);
-    }
+    setIncludeMaterials((prev) =>
+      prev.map((mat, i) => (i === index ? { ...mat, isNew: !mat.isNew } : mat))
+    );
+    setHasChanged(true);
   };
 
   const handleAddMaterial = () => {
     const newMaterial: Material = {
-      title: "Sem título",
+      title: "",
       href: "",
       description: "",
       imageUrl: "#",
       isNew: false,
     };
-    setIncludeMaterials([...IncludeMaterials, newMaterial]);
+    setIncludeMaterials((prev) => [...prev, newMaterial]);
+    setHasChanged(true);
   };
 
   const handleDeleteMaterial = (index: number) => {
-    const updatedIncludeMaterials = [...IncludeMaterials];
-    updatedIncludeMaterials.splice(index, 1);
-    setIncludeMaterials(updatedIncludeMaterials);
+    setIncludeMaterials((prev) => prev.filter((_, i) => i !== index));
+    setHasChanged(true);
   };
 
-  const handleSave = () => {
-    updateMaterials(IncludeMaterials).then(() => {
+  const handleSave = async () => {
+    try {
+      await updateMaterials(includeMaterials);
       setHasChanged(false);
       alert("Materiais salvos com sucesso!");
-    });
+    } catch (error) {
+      alert("Erro ao salvar materiais.");
+    }
   };
 
   return (
     <Box px={4} display="flex" flexDirection="column" gap={4}>
       <HeadingText align="left" text="Materiais" />
-      {loading && <Spinner />}
-      <Accordion
-        border={"1px solid"}
-        borderColor={"red.400"}
-        borderRadius={"md"}
-        allowToggle
-      >
-        {IncludeMaterials.map((item, index) => (
-          <AccordionItem key={index}>
+      
+      {loading && <Spinner color="red.500" />}
+
+      <Accordion border="1px solid" borderColor="red.400" borderRadius="md" allowToggle>
+        {includeMaterials.map((item, index) => (
+          <AccordionItem key={`material-${index}`}>
             <h2>
               <AccordionButton>
-                <Box flex="1" textAlign="left">
+                <Box flex="1" textAlign="left" fontWeight="bold">
                   {item.title || "Novo Material"}
                 </Box>
                 <AccordionIcon />
               </AccordionButton>
             </h2>
-            <AccordionPanel
-              pb={4}
-              display="flex"
-              flexDirection="column"
-              gap={2}
-            >
-              <FormControl alignItems="center">
-                <FormLabel htmlFor="title" mb="0">
-                  Título do Material
-                </FormLabel>
+            <AccordionPanel pb={4} display="flex" flexDirection="column" gap={4}>
+              <FormControl>
+                <FormLabel>Título do Material</FormLabel>
                 <Input
-                  title="Título do Material"
                   defaultValue={item.title}
                   onChange={(e) => handleInputChange(e, index, "title")}
-                  placeholder="Título"
-                  mb={2}
+                  placeholder="Ex: Guia de React"
                   variant="filled"
                 />
               </FormControl>
-              <FormControl alignItems="center">
-                <FormLabel htmlFor="href" mb="0">
-                  Link que o Material redireciona
-                </FormLabel>
+
+              <FormControl>
+                <FormLabel>Link de Redirecionamento</FormLabel>
                 <Input
-                  defaultValue={item.href}
+                  value={item.href}
                   onChange={(e) => handleInputChange(e, index, "href")}
-                  placeholder="Link"
-                  mb={2}
+                  placeholder="https://..."
                   variant="filled"
                 />
               </FormControl>
-              <FormControl alignItems="center">
-                <FormLabel htmlFor="description" mb="0">
-                  Descrição do Material
-                </FormLabel>
+
+              <FormControl>
+                <FormLabel>Descrição</FormLabel>
                 <Textarea
-                  defaultValue={item.description}
+                  value={item.description}
                   onChange={(e) => handleInputChange(e, index, "description")}
-                  placeholder="Descrição"
-                  mb={2}
+                  placeholder="Breve descrição..."
                   variant="filled"
                 />
               </FormControl>
-              <FormControl alignItems="center">
-                <FormLabel htmlFor="imageUrl" mb="0">
-                  URL da Imagem
-                </FormLabel>
-                <Input
-                  defaultValue={item.imageUrl}
-                  onChange={(e) => handleInputChange(e, index, "imageUrl")}
-                  placeholder="URL da Imagem"
-                  mb={2}
-                  display={"flex"}
-                  alignItems={"center"}
-                  variant="filled"
-                />
+
+              <FormControl>
+                <FormLabel>Imagem do Material</FormLabel>
+                <Flex gap={4} alignItems="center">
+                  <Box flexShrink={0}>
+                    <Image
+                      src={item.imageUrl}
+                      alt="Prévia"
+                      boxSize="80px"
+                      objectFit="cover"
+                      borderRadius="md"
+                      fallback={
+                        <Box boxSize="80px" bg="gray.200" borderRadius="md" display="flex" alignItems="center" justifyContent="center">
+                          <TbUpload size={24} color="gray" />
+                        </Box>
+                      }
+                    />
+                  </Box>
+
+                  <Box>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleFileChange(e, index)}
+                      display="none"
+                      id={`upload-${index}`}
+                    />
+                    <Button
+                      as="label"
+                      htmlFor={`upload-${index}`}
+                      variant="outline"
+                      colorScheme="blue"
+                      leftIcon={<TbUpload />}
+                      cursor="pointer"
+                      isLoading={uploadingIndex === index}
+                    >
+                      Alterar Imagem
+                    </Button>
+                  </Box>
+                </Flex>
               </FormControl>
-              <FormControl alignItems="center">
-                <FormLabel htmlFor="isNew" mb="0">
-                  Marcar como Novo?
-                </FormLabel>
+
+              <FormControl display="flex" alignItems="center">
+                <FormLabel mb="0">Marcar como Novo?</FormLabel>
                 <Switch
                   colorScheme="blue"
-                  size="lg"
                   isChecked={item.isNew}
                   onChange={() => handleSwitchChange(index)}
-                  alignItems="center"
-                  display="flex"
-                >
-                  {item.isNew ? "Sim" : "Não"}
-                </Switch>
+                />
+                <Box ml={2}>{item.isNew ? "Sim" : "Não"}</Box>
               </FormControl>
-              <DeleteButton onDelete={() => handleDeleteMaterial(index)} />
+
+              <Box mt={2}>
+                <DeleteButton onDelete={() => handleDeleteMaterial(index)} />
+              </Box>
             </AccordionPanel>
           </AccordionItem>
         ))}
       </Accordion>
 
-      <Stack direction="row" spacing={4} justifyContent="between">
+      <Stack direction="row" spacing={4} mt={4}>
         <Button
-          variant={"outline"}
+          variant="outline"
           leftIcon={<TbPlus />}
           onClick={handleAddMaterial}
           isDisabled={loading}
+          flex={1}
         >
           Adicionar Material
         </Button>
         <Button
           colorScheme="blue"
           rightIcon={<BiSave />}
-          isDisabled={!hasChanged}
-          onClick={() => handleSave()}
+          isDisabled={!hasChanged || uploadingIndex !== null}
+          onClick={handleSave}
           isLoading={loading}
+          flex={1}
         >
-          Salvar Materiais
+          Salvar Alterações
         </Button>
       </Stack>
     </Box>

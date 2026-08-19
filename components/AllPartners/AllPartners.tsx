@@ -25,7 +25,6 @@ const PartnerImage = ({ name, href, imageUrl }: Partner) => {
             height="100%"
             cursor="pointer"
             transition="filter 0.3s ease-in-out"
-            filter={"grayscale(100%)"}
             scale={0.9}
             _hover={{
               filter: "grayscale(0%)",
@@ -70,6 +69,7 @@ const AllPartners = () => {
       {partners.map((partner: Partner, index: number) => (
         <Reveal key={partner.name} delay={index * 0.1} className="mb-4">
           <PartnerImage
+            id={partner.id}
             name={partner.name}
             href={partner.href}
             imageUrl={partner.imageUrl}

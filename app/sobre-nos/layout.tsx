@@ -4,7 +4,7 @@ import baseMetadata from "utils/metadata";
 
 export const metadata: Metadata = {
   ...baseMetadata,
-  title: "Sobre nós - Include Gurias",
+  title: "Saiba mais - Include Gurias",
   description: "Conheça mais sobre o projeto Include Gurias e sua equipe!",
 };
 

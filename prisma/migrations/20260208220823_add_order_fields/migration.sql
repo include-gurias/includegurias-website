@@ -1,0 +1,11 @@
+-- AlterTable
+ALTER TABLE "Material" ADD COLUMN     "order" INTEGER NOT NULL DEFAULT 0;
+
+-- AlterTable
+ALTER TABLE "News" ADD COLUMN     "order" INTEGER NOT NULL DEFAULT 0;
+
+-- AlterTable
+ALTER TABLE "Partners" ADD COLUMN     "order" INTEGER NOT NULL DEFAULT 0;
+
+-- AlterTable
+ALTER TABLE "TeamMember" ADD COLUMN     "order" INTEGER NOT NULL DEFAULT 0;

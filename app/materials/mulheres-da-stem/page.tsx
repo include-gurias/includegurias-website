@@ -138,7 +138,7 @@ const MulheresNasExatas = () => {
         </p>
         {/* Falar que temos os cards fisicamente, PDF (disponibilizar o link) e no chatbot (link) */}
         <span className="text-md text-center" id="text">
-          Nós temos os estes cards fisicamente, em{" "}
+          Os cards também estão disponíveis fisicamente, em{" "}
           <Link
             className="text-blue-500 underline hover:text-blue-700"
             href="#@TODO adicionar link cards"

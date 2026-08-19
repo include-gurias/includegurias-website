@@ -3,9 +3,10 @@ import { persist } from "zustand/middleware";
 
 interface AuthStore {
   isLoggedIn: boolean;
-  login: (password: string, email: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>; // ✅ Ordem arrumada
   logout: () => void;
 }
+
 const useAuthStore = create(
   persist<AuthStore>(
     (set) => ({
@@ -14,9 +15,8 @@ const useAuthStore = create(
         const userLocalStorage = localStorage.getItem("accessToken");
         if (userLocalStorage) {
           set({ isLoggedIn: true });
-          throw new Error("User not found");
+          return; // ✅ Removido o throw error bizarro daqui
         } else {
-          //api call to the "api/auth" route
           const response = (await fetch("/api/auth", {
             method: "POST",
             headers: { "Content-Type": "application/json" },

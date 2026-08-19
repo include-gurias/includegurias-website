@@ -6,41 +6,40 @@ import PartnerSlide from "./partnerSlide";
 import "./partners.css";
 
 export default function Partners() {
-  const [partners] = usePartnersStore((state) => [state.partners]);
-  const { getPartners } = usePartnersStore((state) => ({
-    getPartners: state.getPartners,
-  }));
+  const partners = usePartnersStore((state) => state.partners);
+  const getPartners = usePartnersStore((state) => state.getPartners);
 
   useEffect(() => {
     getPartners();
   }, [getPartners]);
 
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
-
-  useEffect(() => {
-    const marquee = document.querySelector(".marquee--8") as HTMLElement;
-    if (marquee) {
-      marquee.style.setProperty("--marquee-items", partners.length.toString());
-    }
-  });
+  const containerRef = useRef(null);
+  const isInView = useInView(containerRef, { once: true, margin: "-50px" });
 
   return (
     <div className="container mx-auto flex flex-col items-center justify-center space-y-8">
-      <div className="marquee marquee--8" id="first-line">
+      <div
+        ref={containerRef}
+        className="marquee marquee--8"
+        id="first-line"
+        style={
+          {
+            "--marquee-items": partners.length,
+          } as React.CSSProperties
+        }
+      >
         {partners.map((partner, index) => (
           <motion.div
-            key={index}
-            className="marquee__item first-row"
-            initial={{ scale: 0 }}
-            ref={ref}
-            animate={{
-              ...(isInView
-                ? { opacity: 1, scale: 1 }
-                : { opacity: 0, scale: 0 }),
-            }}
+            key={partner.name || index}
+            className="marquee__item"
+            style={{ "--marquee-item-index": index + 1 } as React.CSSProperties}
+            // ... animações
           >
-            <PartnerSlide imageUrl={partner.imageUrl} name={partner.name} />
+            <PartnerSlide
+              imageUrl={partner.imageUrl}
+              name={partner.name}
+              priority={index < 4}
+            />
           </motion.div>
         ))}
       </div>

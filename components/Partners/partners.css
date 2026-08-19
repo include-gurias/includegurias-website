@@ -8,85 +8,53 @@
   width: 100%;
   margin: 16px !important;
   height: 150px;
-  mask-image: linear-gradient(to right, hsl(0 0% 0% / 0), hsl(0 0% 0% / 1) 20%, hsl(0 0% 0% / 1) 80%, hsl(0 0% 0% / 0));
+  /* Mascaramento suave nas bordas */
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 20%,
+    black 80%,
+    transparent
+  );
+  overflow: hidden; /* Garante que nada escape do container */
 }
 
 .marquee--8 {
   --marquee-item-width: 250px;
   --marquee-item-height: 100px;
   --marquee-duration: 36s;
-  --marquee-items: 15;
 }
 
-/* se for menor que 700px diminuir tamanho item */
 @media (max-width: 700px) {
   .marquee--8 {
-    --marquee-item-width: 80px;
+    --marquee-item-width: 150px;
     --marquee-item-height: 80px;
   }
 }
 
 .marquee__item {
   width: var(--marquee-item-width);
-  max-height: var(--marquee-item-height);
-
+  height: var(--marquee-item-height);
+  position: absolute;
+  
   --marquee-item-offset: max(
     calc(var(--marquee-item-width) * var(--marquee-items)),
     calc(100% + var(--marquee-item-width))
   );
   --marquee-delay: calc(
-    var(--marquee-duration) / var(--marquee-items) * (var(--marquee-items) - var(--marquee-item-index)) * -1
+    var(--marquee-duration) / var(--marquee-items) *
+    (var(--marquee-items) - var(--marquee-item-index)) * -1
   );
-  position: absolute;
+
   inset-inline-start: var(--marquee-item-offset);
   transform: translateX(-50%);
   animation: go linear var(--marquee-duration) var(--marquee-delay, 0s) infinite;
-  overflow-y: visible !important;
-  height: 100%;
+  
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 8px 16px;
-}
-
-.marquee__item.reverse {
-  animation-direction: reverse;
-}
-
-.paused {
-  animation-play-state: paused;
-}
-
-.marquee--8 .marquee__item:nth-of-type(1) {
-  --marquee-item-index: 1;
-}
-
-.marquee--8 .marquee__item:nth-of-type(2) {
-  --marquee-item-index: 2;
-}
-
-.marquee--8 .marquee__item:nth-of-type(3) {
-  --marquee-item-index: 3;
-}
-
-.marquee--8 .marquee__item:nth-of-type(4) {
-  --marquee-item-index: 4;
-}
-
-.marquee--8 .marquee__item:nth-of-type(5) {
-  --marquee-item-index: 5;
-}
-
-.marquee--8 .marquee__item:nth-of-type(6) {
-  --marquee-item-index: 6;
-}
-
-.marquee--8 .marquee__item:nth-of-type(7) {
-  --marquee-item-index: 7;
-}
-
-.marquee--8 .marquee__item:nth-of-type(8) {
-  --marquee-item-index: 8;
+  will-change: inset-inline-start; /* Otimização de GPU */
 }
 
 @keyframes go {
@@ -95,11 +63,4 @@
   }
 }
 
-/* desativar animação para acessibilidade */
-
-@media (prefers-reduced-motion: reduce) {
-  .marquee__item {
-    animation: none;
-    overflow-y: scroll !important;
-  }
-}
+.paused { animation-play-state: paused; }

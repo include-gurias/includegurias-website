@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:13-alpine # Usa uma versão estável e leve do PostgreSQL
+    restart: always
+    environment:
+      POSTGRES_USER: localdev # Altere para um nome de usuário que você queira
+      POSTGRES_PASSWORD: localdev # Altere para uma senha segura
+      POSTGRES_DB: includeGuriaDB # Altere para o nome do banco de dados
+    ports:
+      - "5432:5432" # Mapeia a porta do container para a sua máquina
+    volumes:
+      - db_data:/var/lib/postgresql/data # Garante que os dados do banco persistam
+volumes:
+  db_data:

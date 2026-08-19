@@ -4,7 +4,7 @@ import baseMetadata from "utils/metadata";
 
 export const metadata: Metadata = {
   ...baseMetadata,
-  title: "Linha do Tempo",
+  title: "Nossa História",
   description: "Conheça a história do projeto #include <gurias>!",
 };
 

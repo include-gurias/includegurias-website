@@ -33,34 +33,16 @@ export default function TeamSection() {
           gap={4}
           mb={16}
         >
-          <SubHeadingText
-            text="Nossa Fundadora"
-            align={"center"}
-            classNames={{ text: "mt-4" }}
-          />
-          <FounderCard
-            name="Fabrícia Damando"
-            job="Coordenadora"
-            imageUrl={FounderImage.src}
-            text="“Fabrícia Damando Santos, professora na UERGS, atua no curso de Engenharia de Computação e no Mestrado Profissional em Formação Docente para PPGSTEM. Doutora em Informática na Educação pela UFRGS/PPGIE, bacharel em Ciência da Computação pela PUC-Goiás e mestre em Engenharia Elétrica e de Computação pela UFG. Destacando-se pela criação do Projeto #include <gurias> em 2018, busca incentivar mais garotas a ingressarem na área de Ciências da Computação, reconhecendo a importância da representatividade. Seu trabalho visa ampliar o acesso e promover a diversidade nesse campo.”"
-          />
-
-          <SubHeadingText
-            text="Nossa Equipe Atual"
+          {/*<SubHeadingText
+            text="????"
             align={"center"}
             classNames={{ text: "mt-16" }}
           />
+          */}
           <TeamWithNoFounder />
 
           <SubHeadingText
-            text="Nossos Bolsistas"
-            align={"center"}
-            classNames={{ text: "mt-16" }}
-          />
-          <BolsistasSection />
-
-          <SubHeadingText
-            text="Todas as pessoas que já ajudaram o Include"
+            text="Todas as pessoas que já participaram do Include"
             align={"center"}
             classNames={{ text: "mt-16" }}
           />

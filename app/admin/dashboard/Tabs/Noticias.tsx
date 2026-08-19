@@ -13,10 +13,12 @@ import {
   Spinner,
   Stack,
   Switch,
+  Flex,
+  Image,
 } from "@chakra-ui/react";
 import { ChangeEvent, useEffect, useState } from "react";
 import { BiSave } from "react-icons/bi";
-import { TbPlus } from "react-icons/tb";
+import { TbPlus, TbUpload } from "react-icons/tb";
 import { useNewsStore } from "app/states";
 import { HeadingText } from "components";
 import News from "types/data/news";
@@ -25,17 +27,52 @@ import DeleteButton from "./DeleteButton";
 const Noticias = () => {
   const [noticias, setNoticias] = useState<News[]>([]);
   const [hasChanged, setHasChanged] = useState(false);
-  const { getNews, updateNews, newsLoading } = useNewsStore((state) => ({
-    getNews: state.getNews,
-    updateNews: state.updateNews,
-    newsLoading: state.newsLoading,
-  }));
+  const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
 
-  useEffect(() => {
-    getNews().then((news) => {
-      setNoticias(news);
-    });
-  }, [getNews]);
+const getNews = useNewsStore((state) => state.getNews);
+const updateNews = useNewsStore((state) => state.updateNews);
+const newsLoading = useNewsStore((state) => state.newsLoading);
+
+useEffect(() => {
+  getNews().then((news) => {
+    setNoticias(news);
+  });
+}, [getNews]); // Agora getNews não muda a cada render, fim do loop!
+
+  const handleFileChange = async (
+    e: ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploadingIndex(index);
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error("Falha no upload");
+
+      const data = await response.json();
+
+      setNoticias((prev) =>
+        prev.map((news, i) =>
+          i === index ? { ...news, imageUrl: data.url } : news
+        )
+      );
+      setHasChanged(true);
+    } catch (error) {
+      console.error(error);
+      alert("Erro ao fazer upload da imagem.");
+    } finally {
+      setUploadingIndex(null);
+    }
+  };
 
   const handleAddNews = () => {
     setHasChanged(true);
@@ -61,7 +98,7 @@ const Noticias = () => {
 
   const handleSave = () => {
     updateNews(noticias).then(() => {
-      alert("Materiais salvos com sucesso!");
+      alert("Notícias salvas com sucesso!");
     });
     setHasChanged(false);
   };
@@ -127,7 +164,7 @@ const Noticias = () => {
                   <FormControl>
                     <FormLabel>Título</FormLabel>
                     <Input
-                      defaultValue={noticia.title}
+                      value={noticia.title}
                       onChange={(e) => handleNewsChange(e, index, "title")}
                       placeholder="Título"
                     />
@@ -140,14 +177,63 @@ const Noticias = () => {
                       placeholder="Descrição"
                     />
                   </FormControl>
+
+                  {/* --- CAMPO DE UPLOAD DA NOTÍCIA --- */}
                   <FormControl>
-                    <FormLabel>Imagem</FormLabel>
-                    <Input
-                      defaultValue={noticia.imageUrl || ""}
-                      onChange={(e) => handleNewsChange(e, index, "imageUrl")}
-                      placeholder="URL da imagem"
-                    />
+                    <FormLabel>Imagem da Notícia</FormLabel>
+                    <Flex gap={4} alignItems="center">
+                      <Box flexShrink={0}>
+                        {noticia.imageUrl ? (
+                          <Image
+                            src={noticia.imageUrl}
+                            alt="Prévia"
+                            boxSize="80px"
+                            objectFit="cover"
+                            borderRadius="md"
+                            fallback={
+                              <Box
+                                boxSize="80px"
+                                bg="gray.200"
+                                borderRadius="md"
+                              />
+                            }
+                          />
+                        ) : (
+                          <Box
+                            boxSize="80px"
+                            bg="gray.100"
+                            borderRadius="md"
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                          >
+                            <TbUpload size={24} color="gray" />
+                          </Box>
+                        )}
+                      </Box>
+                      <Box>
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleFileChange(e, index)}
+                          display="none"
+                          id={`news-upload-${index}`}
+                        />
+                        <Button
+                          as="label"
+                          htmlFor={`news-upload-${index}`}
+                          variant="outline"
+                          colorScheme="blue"
+                          leftIcon={<TbUpload />}
+                          cursor="pointer"
+                          isLoading={uploadingIndex === index}
+                        >
+                          {noticia.imageUrl ? "Alterar Imagem" : "Fazer Upload"}
+                        </Button>
+                      </Box>
+                    </Flex>
                   </FormControl>
+
                   <FormControl>
                     <FormLabel>URL</FormLabel>
                     <Input
@@ -167,7 +253,7 @@ const Noticias = () => {
                   <FormControl>
                     <FormLabel>Exibir na timeline</FormLabel>
                     <Switch
-                      defaultChecked={noticia.showInTimeline}
+                      isChecked={noticia.showInTimeline}
                       onChange={() => handleSwitchChange(index)}
                     />
                   </FormControl>
@@ -195,7 +281,7 @@ const Noticias = () => {
         <Button
           colorScheme="blue"
           rightIcon={<BiSave />}
-          isDisabled={!hasChanged || newsLoading}
+          isDisabled={!hasChanged || newsLoading || uploadingIndex !== null}
           onClick={() => handleSave()}
           isLoading={newsLoading}
         >

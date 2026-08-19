@@ -3,8 +3,9 @@ import { prisma } from "prisma/config";
 
 export async function GET(_request: Request) {
   try {
-    // Busca todas as notícias do banco de dados
-    const news = await prisma.news.findMany({});
+    const news = await prisma.news.findMany({
+      orderBy: { order: "asc" },
+    });
 
     return new Response(JSON.stringify(news), {
       status: 200,
@@ -14,7 +15,6 @@ export async function GET(_request: Request) {
     console.error(error);
     return new Response(JSON.stringify({ error: "Erro no servidor" }), {
       status: 500,
-      headers: { "Content-Type": "application/json" },
     });
   }
 }
@@ -23,34 +23,60 @@ export async function PUT(request: Request) {
   try {
     const newNews = (await request.json()) as News[];
 
-    // Verifica se as notícias são válidas
-    if (!newNews || newNews.length === 0) {
+    if (!newNews || !Array.isArray(newNews) || newNews.length === 0) {
       return new Response(
         JSON.stringify({ error: "Nenhuma notícia informada" }),
         {
           status: 400,
-          headers: { "Content-Type": "application/json" },
         }
       );
     }
 
-    // Deleta todas as notícias existentes
-    await prisma.news.deleteMany({});
+    for (let i = 0; i < newNews.length; i++) {
+      const item = newNews[i];
 
-    // Cria as novas notícias
-    await prisma.news.createMany({
-      data: newNews,
-    });
+      if (!item || !item.title) {
+        console.warn(`Notícia no índice ${i} ignorada por estar incompleta.`);
+        continue;
+      }
 
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+      if (item.id) {
+        // Update
+        await prisma.news.update({
+          where: { id: item.id },
+          data: {
+            title: item.title,
+            text: item.text ?? "",
+            imageUrl: item.imageUrl ?? "",
+            date: item.date ?? new Date().toDateString(),
+            href: item.href ?? "#",
+            showInTimeline: item.showInTimeline ?? true,
+            order: i,
+          },
+        });
+      } else {
+        await prisma.news.create({
+          data: {
+            title: item.title,
+            text: item.text, // Se for obrigatório no schema, deve vir no JSON
+            imageUrl: item.imageUrl,
+            date: item.date || new Date().toISOString(), // Fallback para data atual
+            href: item.href,
+            showInTimeline: item.showInTimeline ?? true,
+            order: i,
+          },
+        });
+      }
+    }
+
+    return new Response(JSON.stringify({ success: true }), { status: 200 });
   } catch (error) {
-    console.error(error);
-    return new Response(JSON.stringify({ error: "Erro no servidor" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    console.error("Erro no PUT News:", error);
+    return new Response(
+      JSON.stringify({ error: "Erro no servidor ao salvar notícias" }),
+      {
+        status: 500,
+      }
+    );
   }
 }

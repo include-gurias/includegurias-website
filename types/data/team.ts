@@ -1,8 +1,10 @@
 export interface TeamMember {
+  id?: number;
   name: string;
   job?: string;
   imageUrl?: string;
   href?: string;
+  order?: number;
 }
 
 // usado no all team members component
